@@ -1,0 +1,3 @@
+name: ChatConnect
+version: 1.0-SNAPSHOT
+main: io.github.smputils.chatconnect.ChatConnect
