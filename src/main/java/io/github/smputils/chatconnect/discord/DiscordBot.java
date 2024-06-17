@@ -16,9 +16,15 @@ public class DiscordBot {
 
     public DiscordBot(PluginConfig config) {
         jda = JDABuilder
-                .createLight(config.getDiscordToken(), GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
-                .addEventListeners(new MessageListener())
+                .createLight(config.getDiscordToken(), GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
+                .addEventListeners(new MessageListener(config))
                 .build();
+
+        try {
+            jda.awaitReady();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         MessageMediator
                 .getInstance()
@@ -28,12 +34,6 @@ public class DiscordBot {
                             .sendMessage("<" + message.userName() + "> " + message.message())
                             .submit();
                 });
-
-        try {
-            jda.awaitReady();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
     }
 
