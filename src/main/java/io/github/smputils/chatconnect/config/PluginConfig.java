@@ -14,7 +14,6 @@ public class PluginConfig {
         config = plugin.getConfig();
 
         config.addDefault("bot.token", "");
-        config.addDefault("bot.guild_id", "");
         config.addDefault("bot.channel_id", "");
 
         config.options().copyDefaults(true);
@@ -28,10 +27,6 @@ public class PluginConfig {
 
     public String getDiscordToken() {
         return config.getString("bot.token");
-    }
-
-    public String getDiscordGuildId() {
-        return config.getString("bot.guild_id");
     }
 
     public String getDiscordChannelId() {
