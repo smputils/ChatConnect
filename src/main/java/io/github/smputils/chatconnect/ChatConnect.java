@@ -7,7 +7,7 @@ import io.github.smputils.chatconnect.common.ChatMessage;
 import io.github.smputils.chatconnect.common.mediator.MessageMediator;
 import io.github.smputils.chatconnect.config.PluginConfig;
 import io.github.smputils.chatconnect.discord.DiscordBot;
-import io.github.smputils.chatconnect.minecraft.ChatListener;
+import io.github.smputils.chatconnect.minecraft.MinecraftListener;
 
 public class ChatConnect extends JavaPlugin {
 
@@ -25,8 +25,8 @@ public class ChatConnect extends JavaPlugin {
                 .subscribe((ChatMessage message) -> {
                     Bukkit.broadcastMessage("<" + message.userName() + "> " + message.message());
                 });
-        
-        getServer().getPluginManager().registerEvents(new ChatListener(), this);
+
+        getServer().getPluginManager().registerEvents(new MinecraftListener(), this);
         getLogger().info("Plugin Enabled!");
     }
 
