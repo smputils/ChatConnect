@@ -2,12 +2,14 @@ package io.github.smputils.chatconnect.minecraft;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import io.github.smputils.chatconnect.common.mediator.MessageMediator;
 import io.github.smputils.chatconnect.minecraft.events.MinecraftChatEvent;
+import io.github.smputils.chatconnect.minecraft.events.MinecraftDeathEvent;
 import io.github.smputils.chatconnect.minecraft.events.MinecraftJoinEvent;
 import io.github.smputils.chatconnect.minecraft.events.MinecraftLeaveEvent;
 
@@ -32,6 +34,13 @@ public class MinecraftListener implements Listener {
         MessageMediator.getInstance()
                 .getMinecraftEvents()
                 .publish(new MinecraftLeaveEvent(e.getPlayer().getDisplayName()));
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        MessageMediator.getInstance()
+                .getMinecraftEvents()
+                .publish(new MinecraftDeathEvent(e.getEntity().getDisplayName(), e.getDeathMessage()));
     }
 
 }
