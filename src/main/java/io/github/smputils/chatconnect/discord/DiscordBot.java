@@ -5,7 +5,9 @@ import java.time.Duration;
 import io.github.smputils.chatconnect.common.mediator.MessageMediator;
 import io.github.smputils.chatconnect.config.PluginConfig;
 import io.github.smputils.chatconnect.discord.listeners.MessageListener;
+import io.github.smputils.chatconnect.discord.visitors.PlainTextVisitor;
 import io.github.smputils.chatconnect.minecraft.events.MinecraftEvent;
+import io.github.smputils.chatconnect.minecraft.events.MinecraftEventVisitor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -14,6 +16,7 @@ public class DiscordBot {
 
     private JDA jda;
     private PluginConfig config;
+    private MinecraftEventVisitor visitor;
 
     public DiscordBot(PluginConfig config) {
         jda = JDABuilder
@@ -23,6 +26,8 @@ public class DiscordBot {
                 .build();
 
         this.config = config;
+
+        setVisitor(new PlainTextVisitor(this));
 
         try {
             jda.awaitReady();
@@ -34,9 +39,17 @@ public class DiscordBot {
                 .getInstance()
                 .getMinecraftEvents()
                 .subscribe((MinecraftEvent event) -> {
-                    event.display(this);
+                    event.accept(getVisitor());
                 });
 
+    }
+
+    private MinecraftEventVisitor getVisitor() {
+        return visitor;
+    }
+
+    private void setVisitor(MinecraftEventVisitor visitor) {
+        this.visitor = visitor;
     }
 
     public void sendMessage(String message) {

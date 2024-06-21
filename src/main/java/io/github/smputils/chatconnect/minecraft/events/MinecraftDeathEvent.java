@@ -1,7 +1,5 @@
 package io.github.smputils.chatconnect.minecraft.events;
 
-import io.github.smputils.chatconnect.discord.DiscordBot;
-
 public class MinecraftDeathEvent extends MinecraftEvent {
 
     private String deathMessage;
@@ -19,8 +17,7 @@ public class MinecraftDeathEvent extends MinecraftEvent {
         this.deathMessage = deathMessage;
     }
 
-    public void display(DiscordBot bot) {
-        bot.sendMessage(deathMessage);
+    public void accept(MinecraftEventVisitor visitor) {
+        visitor.doMinecraftDeathEvent(this);
     }
-
 }
