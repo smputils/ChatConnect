@@ -2,10 +2,11 @@ package io.github.smputils.chatconnect.discord;
 
 import java.time.Duration;
 
-import io.github.smputils.chatconnect.common.ChatMessage;
 import io.github.smputils.chatconnect.common.mediator.MessageMediator;
 import io.github.smputils.chatconnect.config.PluginConfig;
 import io.github.smputils.chatconnect.discord.listeners.MessageListener;
+import io.github.smputils.chatconnect.minecraft.events.MinecraftChatEvent;
+import io.github.smputils.chatconnect.minecraft.events.MinecraftEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -16,7 +17,8 @@ public class DiscordBot {
 
     public DiscordBot(PluginConfig config) {
         jda = JDABuilder
-                .createLight(config.getDiscordToken(), GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS)
+                .createLight(config.getDiscordToken(), GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_MEMBERS)
                 .addEventListeners(new MessageListener(config))
                 .build();
 
@@ -28,11 +30,16 @@ public class DiscordBot {
 
         MessageMediator
                 .getInstance()
-                .getMinecraftMessages()
-                .subscribe((ChatMessage message) -> {
-                    jda.getTextChannelById(config.getDiscordChannelId())
-                            .sendMessage("<" + message.userName() + "> " + message.message())
-                            .submit();
+                .getMinecraftEvents()
+                .subscribe((MinecraftEvent event) -> {
+                    if (event instanceof MinecraftChatEvent) {
+                        MinecraftChatEvent minecraftChatEvent = (MinecraftChatEvent) event;
+
+                        jda.getTextChannelById(config.getDiscordChannelId())
+                                .sendMessage(
+                                        "<" + minecraftChatEvent.getUserName() + "> " + minecraftChatEvent.getMessage())
+                                .submit();
+                    }
                 });
 
     }
