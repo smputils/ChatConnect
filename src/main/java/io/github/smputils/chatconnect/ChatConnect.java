@@ -1,6 +1,7 @@
 package io.github.smputils.chatconnect;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import io.github.smputils.chatconnect.common.ChatMessage;
@@ -23,7 +24,8 @@ public class ChatConnect extends JavaPlugin {
                 .getInstance()
                 .getDiscordMessages()
                 .subscribe((ChatMessage message) -> {
-                    Bukkit.broadcastMessage("<" + message.userName() + "> " + message.message());
+                    String formatted_message = String.format(config.getMinecraftMessageFormat(), message.userName(), message.message());
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', formatted_message));
                 });
         
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
