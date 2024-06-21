@@ -26,7 +26,7 @@ public class ChatConnect extends JavaPlugin {
                     Bukkit.broadcastMessage("<" + message.userName() + "> " + message.message());
                 });
 
-        getServer().getPluginManager().registerEvents(new MinecraftListener(), this);
+        getServer().getPluginManager().registerEvents(new MinecraftListener(config), this);
         getLogger().info("Plugin Enabled!");
     }
 
