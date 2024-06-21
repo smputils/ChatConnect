@@ -20,6 +20,7 @@ public class PluginConfig {
 
         config.addDefault("bot.token", "");
         config.addDefault("bot.channel_id", "");
+        config.addDefault("minecraft.message_format", "<%s> %s");
 
         config.options().copyDefaults(true);
 
@@ -52,6 +53,10 @@ public class PluginConfig {
 
     public String getDiscordChannelId() {
         return config.getString("bot.channel_id");
+    }
+
+    public String getMinecraftMessageFormat() {
+        return config.getString("minecraft.message_format");
     }
 
 }
