@@ -5,12 +5,15 @@ import java.time.Duration;
 import io.github.smputils.chatconnect.common.mediator.MessageMediator;
 import io.github.smputils.chatconnect.config.PluginConfig;
 import io.github.smputils.chatconnect.discord.listeners.MessageListener;
+import io.github.smputils.chatconnect.discord.visitors.EmbedVisitor;
 import io.github.smputils.chatconnect.discord.visitors.PlainTextVisitor;
 import io.github.smputils.chatconnect.minecraft.events.MinecraftEvent;
 import io.github.smputils.chatconnect.minecraft.events.MinecraftEventVisitor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 public class DiscordBot {
 
@@ -27,7 +30,7 @@ public class DiscordBot {
 
         this.config = config;
 
-        setVisitor(new PlainTextVisitor(this));
+        setVisitor(createVisitor(config.getDiscordMessageType()));
 
         try {
             jda.awaitReady();
@@ -52,9 +55,16 @@ public class DiscordBot {
         this.visitor = visitor;
     }
 
-    public void sendMessage(String message) {
+    public void sendMessage(CharSequence message) {
         jda.getTextChannelById(config.getDiscordChannelId())
                 .sendMessage(message)
+                .submit();
+    }
+
+    public void sendEmbed(MessageEmbed embed) {
+        jda.getTextChannelById(config.getDiscordChannelId())
+                .sendMessage("")
+                .addEmbeds(embed)
                 .submit();
     }
 
@@ -66,6 +76,14 @@ public class DiscordBot {
             jda.shutdownNow(); // Cancel request queue
             jda.awaitShutdown(); // Wait until shutdown is complete (indefinitely)
         }
+    }
+
+    private MinecraftEventVisitor createVisitor(String messageType) {
+        return switch (messageType) {
+            case "classic" -> new PlainTextVisitor(this);
+            case "embed" -> new EmbedVisitor(this);
+            default -> new PlainTextVisitor(this);
+        };
     }
 
 }
